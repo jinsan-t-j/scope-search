@@ -1,5 +1,7 @@
 # 🔭 Scope Search
 
+THIS REPOSITORY IS UNDER DEVELOPMENT.
+
 > Search within the current function/class/object and its siblings — not the whole file, not the whole project.
 
 ## The Problem
