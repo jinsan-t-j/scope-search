@@ -1,0 +1,196 @@
+{
+  "name": "scope-search",
+  "displayName": "Scope Search",
+  "description": "Search within the current function/class/object and its siblings across all major languages",
+  "version": "1.0.0",
+  "publisher": "jinsantj",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "search",
+    "scope",
+    "function",
+    "siblings",
+    "AST",
+    "tree-sitter"
+  ],
+  "icon": "media/icons/scope-search-128.png",
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:python",
+    "onLanguage:java",
+    "onLanguage:c",
+    "onLanguage:cpp",
+    "onLanguage:csharp",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:ruby",
+    "onLanguage:php",
+    "onLanguage:swift",
+    "onLanguage:kotlin",
+    "onLanguage:scala",
+    "onLanguage:lua",
+    "onLanguage:shellscript",
+    "onLanguage:bash",
+    "onView:scopeSearch.panel"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "scopeSearch",
+          "title": "Scope Search",
+          "icon": "media/icons/scope-search.svg"
+        }
+      ]
+    },
+    "views": {
+      "scopeSearch": [
+        {
+          "type": "webview",
+          "id": "scopeSearch.panel",
+          "name": "Scope Search"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "scopeSearch.addToScopeSearch",
+        "title": "Add to Scope Search",
+        "category": "Scope Search",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "scopeSearch.searchCurrentScope",
+        "title": "Search on current scope",
+        "category": "Scope Search",
+        "icon": "$(search)"
+      },
+      {
+        "command": "scopeSearch.replaceInSiblings",
+        "title": "Replace all with scope search",
+        "category": "Scope Search",
+        "icon": "$(replace)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "scopeSearch.addToScopeSearch",
+          "group": "scopeSearch@1",
+          "when": "editorTextFocus && !editorReadonly && scopeSearch.hasActiveScope"
+        },
+        {
+          "command": "scopeSearch.searchCurrentScope",
+          "group": "scopeSearch@2",
+          "when": "editorTextFocus && scopeSearch.hasActiveScope"
+        },
+        {
+          "command": "scopeSearch.replaceInSiblings",
+          "group": "scopeSearch@3",
+          "when": "editorTextFocus && !editorReadonly && scopeSearch.hasActiveScope"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "scopeSearch.searchCurrentScope",
+        "key": "ctrl+f9",
+        "mac": "cmd+f9",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "scopeSearch.replaceInSiblings",
+        "key": "ctrl+shift+alt+h",
+        "mac": "cmd+shift+option+h",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Scope Search",
+      "properties": {
+        "scopeSearch.searchOnSelect": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically search for selected text in sibling scopes"
+        },
+        "scopeSearch.highlightSiblings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight sibling scope boundaries when cursor enters a scope"
+        },
+        "scopeSearch.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "description": "Milliseconds to debounce cursor movement detection"
+        },
+        "scopeSearch.maxResults": {
+          "type": "number",
+          "default": 500,
+          "description": "Maximum number of search results to display"
+        },
+        "scopeSearch.includeCurrentInSiblings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include the current scope in sibling search"
+        },
+        "scopeSearch.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show current scope name in status bar"
+        },
+        "scopeSearch.fallbackParser": {
+          "type": "string",
+          "enum": [
+            "bracket",
+            "indent",
+            "none"
+          ],
+          "default": "bracket",
+          "description": "Fallback parser for unsupported languages"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "lint": "eslint src test --ext ts",
+    "lint:fix": "eslint src test --ext ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "test": "node ./out/test/runTest.js",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "tree-sitter-wasms": "^0.1.11",
+    "web-tree-sitter": "^0.24.7"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/test-electron": "^2.3.8",
+    "esbuild": "^0.21.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "husky": "^9.1.7",
+    "mocha": "^10.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.0"
+  }
+}
